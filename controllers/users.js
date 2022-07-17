@@ -24,7 +24,7 @@ module.exports.getUserById = (req, res) => {
     if (err.name === 'ValidationError' || err.name === 'CastError') {
       res.status(400).send({ "message": "Введены некорректные данные" });
     } else {
-      res.status(500).send({ message: "Ошибка по умолчанию." });
+      res.status(500).send({ "message": "Ошибка по умолчанию." });
     }
   })
 };
