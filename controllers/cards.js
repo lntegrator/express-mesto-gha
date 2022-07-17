@@ -6,7 +6,7 @@ module.exports.getCards = (req, res) => {
     res.send(cards)
   })
   .catch((err) => {
-    res.send(`Ошибка ${err.message}`)
+    res.status(500).send({ "message": "Ошибка по умолчанию."})
   })
 };
 
@@ -18,7 +18,11 @@ module.exports.postCard = (req, res) => {
     res.send(card);
   })
   .catch((err) => {
-    res.send(`Ошибка ${err.message}`)
+    if (err.name === 'ValidationError') {
+      res.status(400).send({ "message": "Переданы некорректные данные при создании карточки." });
+    } else {
+      res.status(500).send({ "message": "Ошибка по умолчанию." });
+    }
   })
 }
 
@@ -28,11 +32,11 @@ module.exports.deleteCard = (req, res) => {
     if(card){
       res.send({card});
     } else{
-      res.send('Карточка с указанным _id не найдена.')
+      res.status(404).send("Карточка с указанным _id не найдена.")
     }
   })
   .catch((err) => {
-    res.send(`Ошибка ${err.message}`)
+    res.status(500).send({ "message": "Ошибка по умолчанию." });
   })
 }
 
@@ -46,11 +50,15 @@ module.exports.likeCard = (req, res) => {
     if(card){
       res.send({ card });
     } else{
-      res.send({ message: 'Карточка не найдена' });
+      res.status(404).send({ "message": "Передан несуществующий _id карточки." });
     }
   })
   .catch((err) => {
-    res.send(`Ошибка ${err.message}`);
+    if (err.name === 'ValidationError') {
+      res.status(400).send({ "message": "Переданы некорректные данные для постановки лайка." });
+    } else {
+      res.status(500).send({ "message": "Ошибка по умолчанию." });
+    }
   })
 }
 
@@ -64,10 +72,14 @@ module.exports.deleteLike = (req, res) => {
     if (card){
       res.send({ card });
     } else{
-      res.send({ message: 'Карточка не найдена' })
+      res.status(404).send({ "message": "Передан несуществующий _id карточки." })
     }
   })
   .catch((err) => {
-    res.send(`Ошибка ${err.message}`);
+    if (err.name === 'ValidationError') {
+      res.status(400).send({ "message": "Переданы некорректные данные для постановки лайка." });
+    } else {
+      res.status(500).send({ "message": "Ошибка по умолчанию." });
+    }
   })
 }

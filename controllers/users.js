@@ -6,7 +6,7 @@ module.exports.getUsers = (req, res) => {
     res.send({users})
   })
   .catch((err) => {
-    res.status(500).send({message: `Произошла ошибка ${err.message}`})
+    res.status(500).send({ "message": "Ошибка по умолчанию." })
   })
 };
 
@@ -17,11 +17,11 @@ module.exports.getUserById = (req, res) => {
       res.send({ user });
     }
     else{
-      res.send('Такого чувака нет.')
+      res.status(404).send({ "message": "Пользователь по указанному _id не найден." })
     }
   })
   .catch((err) => {
-    console.log(`Ошибка ${err.message}`)
+    res.status(500).send({ "message": "Ошибка по умолчанию." });
   })
 };
 
@@ -33,7 +33,7 @@ module.exports.postUser = (req, res) => {
     res.send({user});
   })
   .catch((err) => {
-    console.log(`Ошибка ${err.message}`)
+    res.status(500).send({ "message": "Ошибка по умолчанию." })
   })
 }
 
@@ -45,7 +45,13 @@ module.exports.patchProfile = (req, res) => {
     res.send({ user });
   })
   .catch((err) => {
-    res.send(`Ошибка ${err.message}`)
+    if (err.name === 'CastError') {
+      res.status(404).send({ "message": "Пользователь с указанным _id не найден" });
+    } else if (err.name === 'ValidationError') {
+      res.status(400).send({ "message": "Переданы некорректные данные при обновлении профиля." });
+    } else {
+      res.status(500).send({ "message": "Ошибка по умолчанию." });
+    }
   })
 }
 
@@ -55,6 +61,12 @@ module.exports.patchAvatar = (req, res) => {
     res.send({ user });
   })
   .catch((err) => {
-    res.send(`Ошибка ${err.message}`)
+    if (err.name === 'CastError') {
+      res.status(404).send({ "message": "Пользователь с указанным _id не найден" });
+    } else if (err.name === 'ValidationError') {
+      res.status(400).send({ "message": "Переданы некорректные данные при обновлении аватара." });
+    } else {
+      res.status(500).send({ "message": "Ошибка по умолчанию." });
+    }
   })
 }
