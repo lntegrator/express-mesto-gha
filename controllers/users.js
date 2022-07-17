@@ -30,10 +30,14 @@ module.exports.postUser = (req, res) => {
 
   User.create({ name, about, avatar })
   .then((user) => {
-    res.send({user});
+    res.status(201).send({user});
   })
   .catch((err) => {
-    res.status(500).send({ "message": "Ошибка по умолчанию." })
+    if (err.name === 'ValidationError') {
+      res.status(400).send({ "message": "Переданы некорректные данные при создании пользователя." });
+    } else {
+      res.status(500).send({ "message": "Ошибка по умолчанию." })
+    }
   })
 }
 
