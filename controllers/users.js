@@ -77,8 +77,7 @@ module.exports.postUser = (req, res, next) => {
           next(new Conflict('Данный email уже зарегистрирован.'));
         }
         return next(err);
-      }))
-    .catch(next);
+      }));
 };
 
 module.exports.patchProfile = (req, res, next) => {
