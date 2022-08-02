@@ -10,8 +10,9 @@ const bodyParser = require('body-parser');
 const auth = require('./middlewares/auth');
 const routerUsers = require('./routes/users');
 const routerCards = require('./routes/cards');
-const { NOT_FOUND } = require('./utils/statuses');
+const NOT_FOUND = require('./utils/statuses');
 const { login, postUser } = require('./controllers/users');
+const { validatePostUser, validateLogin } = require('./middlewares/validators');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,8 +21,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
 
-app.post('/signin', login);
-app.post('/signup', postUser);
+// Роуты с валидацией данных
+app.post('/signin', validateLogin, login);
+app.post('/signup', validatePostUser, postUser);
 
 // Миддлвэр авторизации
 app.use(auth);
@@ -29,16 +31,17 @@ app.use(auth);
 // Роуты с авторизацией
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
-app.use('*', (req, res) => {
-  res.status(NOT_FOUND).send({ message: 'Страница не найдена' });
+app.use('*', () => {
+  throw new NOT_FOUND('Страница не найдена');
 });
 
 // Централизованная обработка ошибок
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
   res.status(statusCode).send({
     message: statusCode === 500 ? 'Ошибка сервера' : message,
   });
+  next();
 });
 
 app.listen(PORT, () => {
