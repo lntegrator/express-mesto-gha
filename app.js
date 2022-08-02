@@ -31,8 +31,8 @@ app.use(auth);
 // Роуты с авторизацией
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
-app.use('*', () => {
-  throw new NOT_FOUND('Страница не найдена');
+app.use('*', (next) => {
+  next(new NOT_FOUND('Страница не найдена'));
 });
 
 // Централизованная обработка ошибок
