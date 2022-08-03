@@ -18,17 +18,16 @@ module.exports.getUsers = (req, res, next) => {
 module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
-      if (user) {
-        res.send({ user });
-      } else {
-        throw new BadRequest('Пользователь по указанному _id не найден.');
+      if (!user) {
+        throw new NotFoundError('Пользователя с такими данными не существует');
       }
+      res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'CastError') {
         return next(new BadRequest('Введены некорректные данные'));
       }
-      return next(err);
+      next(err);
     });
 };
 

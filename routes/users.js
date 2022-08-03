@@ -6,7 +6,7 @@ const { validateUserId, validatePatchAvatar, validatePatchProfile } = require('.
 
 router.get('/', getUsers);
 router.get('/me', getUser);
-router.get('/:userID', validateUserId, getUserById);
+router.get('/:userId', validateUserId, getUserById);
 router.patch('/me', validatePatchProfile, patchProfile);
 router.patch('/me/avatar', validatePatchAvatar, patchAvatar);
 
