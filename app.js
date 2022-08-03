@@ -11,7 +11,6 @@ const { errors } = require('celebrate');
 const auth = require('./middlewares/auth');
 const routerUsers = require('./routes/users');
 const routerCards = require('./routes/cards');
-const NotFoundError = require('./utils/statuses');
 const { login, postUser } = require('./controllers/users');
 const { validatePostUser, validateLogin } = require('./middlewares/validators');
 
