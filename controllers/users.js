@@ -26,7 +26,7 @@ module.exports.getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(new BadRequest('Введены некорректные данные'));
+        return next(new BadRequest('Введены некорректные данные'));
       }
       return next(err);
     });
@@ -42,14 +42,7 @@ module.exports.getUser = (req, res, next) => {
         throw new NotFoundError('Пользователь по указанному _id не найден.');
       }
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(new BadRequest('Введены некорректные данные'));
-      } else {
-        next(new BadRequest('Введены некорректные данные'));
-      }
-      return next(err);
-    });
+    .catch(next);
 };
 
 // Создаем пользователя
@@ -89,9 +82,9 @@ module.exports.patchProfile = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequest('Переданы некорректные данные при обновлении профиля.'));
+        return next(new BadRequest('Переданы некорректные данные при обновлении профиля.'));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -104,7 +97,7 @@ module.exports.patchAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequest('Переданы некорректные данные при обновлении аватара.'));
+        return next(new BadRequest('Переданы некорректные данные при обновлении аватара.'));
       }
       return next(err);
     });

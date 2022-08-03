@@ -6,11 +6,12 @@ const { default: mongoose } = require('mongoose');
 const { PORT = 3000 } = process.env;
 const app = express();
 const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
 
 const auth = require('./middlewares/auth');
 const routerUsers = require('./routes/users');
 const routerCards = require('./routes/cards');
-const NOT_FOUND = require('./utils/statuses');
+const NotFoundError = require('./utils/statuses');
 const { login, postUser } = require('./controllers/users');
 const { validatePostUser, validateLogin } = require('./middlewares/validators');
 
@@ -31,9 +32,11 @@ app.use(auth);
 // Роуты с авторизацией
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
-app.use('*', (next) => {
-  next(new NOT_FOUND('Страница не найдена'));
+app.use('*', (req, res, next) => {
+  next(new NotFoundError('Страница не найдена'));
 });
+
+app.use(errors());
 
 // Централизованная обработка ошибок
 app.use((err, req, res, next) => {
@@ -43,6 +46,9 @@ app.use((err, req, res, next) => {
   });
   next();
 });
+
+// Благодарю за качественное ревью моего говнокода,
+// выцепил несколько вещей, которых небыло даже в спринте :)
 
 app.listen(PORT, () => {
   console.log('all is right');
