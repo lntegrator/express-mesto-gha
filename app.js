@@ -32,9 +32,6 @@ app.use(auth);
 // Роуты с авторизацией
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
-app.use('*', (req, res, next) => {
-  next(new NotFoundError('Страница не найдена'));
-});
 
 app.use(errors());
 
